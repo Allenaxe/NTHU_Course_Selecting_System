@@ -24,7 +24,7 @@ Course ID,Cource Chinese Name,Course English Name,Teacher Chinese Name,Teacher E
 11120ANTH677500 當代人類學理論,Contemporary,Anthropological Theory 	,"高進榮 GALIPEAU, BRENDAN ARTHUR",4,4.23,0.13
 11120ANTH678000 公眾考古學,Public,Archaeology 	,"謝艾倫 ELLEN HSIEH",7,4.00,0.23
 11120ANTH679800 聚落及景觀考古學,Settlement,and Landscape Archaeology 	,"臧振華 TSANG, CHENG-HWA",3,3.90,0.14
-11120ANTH679900 人類學與親密:,情感和行為,Anthropology and the Intimate: Studies in Emotion and Action 	,"賴婉琪 LAI, YUEN-KI",9,93.78,5.63
+11120ANTH679900 人類學與親密：情感和行為,Anthropology,and the Intimate: Studies in Emotion and Action 	,"賴婉琪 LAI, YUEN-KI",9,93.78,5.63
 11120ANTH680000 書報討論：當代人類學研究理論,Seminar,：Contemporary Anthropological Research Theory 	,"指導教授 ",3,85.00,0.00
 11120ASTR510000 恒星天文物理學,Stellar,Astrophysics 	,"潘國全 PAN, KUO-CHUAN",8,67.50,12.67
 11120ASTR550000 恆星形成,star,formation 	,"何英宏 Daniel Harsono",10,89.80,5.17
@@ -874,7 +874,7 @@ Course ID,Cource Chinese Name,Course English Name,Teacher Chinese Name,Teacher E
 11120GE 196200,生活中的選擇與賽局,Decision making and Games in daily life 	,"潘瑋 PAN, WEI",56,84.95,16.94
 11120GE 198200,半導體產業策略與演進,Strategy and Evolution of Semiconductor Industry 	,"簡禎富 CHIEN, CHEN-FU",40,4.20,0.18
 11120GE 199400,新聞學概論,Introduction to Journalism 	,"蒯亮 LIANG, KUAI",14,86.14,7.96
-11120GE 200101,自主學習:地緣政治的風險與機會,Self-planned Learning: Challenges and Opportunities resulted from Geopolitics 	,"通識教育中心 ",9,4.20,0.14
+11120GE 200101,自主學習：地緣政治的風險與機會,Self-planned Learning: Challenges and Opportunities resulted from Geopolitics 	,"通識教育中心 ",9,4.20,0.14
 11120GEC 110200,批判思考（通識）,Critical Thinking 	,"陳思廷 CHEN, SZU-TING",40,80.70,10.13
 11120GEC 110301,價值與實踐,Value and Practice 	,"洪巳軒 HUNG, SZU-HSUAN",84,81.81,7.51
 11120GEC 110302,價值與實踐,Value and Practice 	,"洪巳軒 HUNG, SZU-HSUAN",67,79.57,7.39
@@ -2522,9 +2522,9 @@ HWA 18,3.99,	0.37 		,"11120PE 112024 	籃球 Basketball 	, 謝佩君 HSIEH, PEI-
 11120SOC 578400,勞動與就業專題：理論與研究,Seminar on Work and Employment: Theory and Research 	,"李韶芬 LEE, SHAO-FEN",12,89.42,2.96
 11120SOC 580200,中國研究工作坊,China Studies Workshop 	,"陶逸駿 TAO, YI-CHUN",11,85.18,11.44
 11120SOC 586100,中國政治體制與組織,Political Institutions and Organizations in China 	,"陶逸駿 TAO, YI-CHUN",4,74.75,23.62
-11120SOC 586300,中國境外影響力與銳實力:台灣香港印太地區,China's Offshore Influence and Sharp Power in Hong Kong, Taiwan and Indo-Pacific 	,"吳介民 WU, JIEH-MIN, 古明君 KU, MING-CHUN",10,87.00,8.19
+11120SOC 586300,中國境外影響力與銳實力：台灣香港印太地區,China's Offshore Influence and Sharp Power in Hong Kong, Taiwan and Indo-Pacific 	,"吳介民 WU, JIEH-MIN, 古明君 KU, MING-CHUN",10,87.00,8.19
 11120SOC 587100,國際比較研究方法,Methods in Comparative International Research 	,"客座教授 ",7,4.09,0.14
-11120SOC 702300,書報討論:當代中國制度變遷與勞動體制,eminar on Institutional Transformaiton and Labor Regime in Contemporary China 	,"指導教授 ",1,4.30,0.00
+11120SOC 702300,書報討論：當代中國制度變遷與勞動體制,eminar on Institutional Transformaiton and Labor Regime in Contemporary China 	,"指導教授 ",1,4.30,0.00
 11120STAT216000 統計學二,Statistics,II 	,"謝文萍 HSIEH, WEN-PING",39,72.85,19.48
 11120STAT262200 統計資料分析,Statistical,Data Analysis 	,"徐南蓉 HSU, NAN-JUNG",59,3.48,0.66
 11120STAT519100 應用多變量分析,Applied,Multivariate Analysis 	,"謝文萍 HSIEH, WEN-PING",30,83.83,11.07
@@ -2707,8 +2707,8 @@ HWA 18,3.99,	0.37 		,"11120PE 112024 	籃球 Basketball 	, 謝佩君 HSIEH, PEI-
 11120TM 700400,定量研究方法,Quantitative Research Method 	,"丘宏昌 CHIU, HUNG-CHANG",13,4.02,0.08
 11120TM 701700,全球永續與社會發展,Global sustainability and social development 	,"錢克瑄 CHIEN, KER-HSUAN, 謝英哲 HSIEH, YING-CHE",5,4.06,0.12
 11120TSE 500000,21世紀全球秩序的移轉,The Transformation of Global Order in the 21st Century 	,"蔡中民 TSAI, CHUNG-MIN",13,3.75,0.34
-11120TSE 500500,書報討論二:,二十一世紀的議題及構想,"Seminar II: Issues and Ideas of the 21st Century 	 ",蔡中民,TSAI,,CHUNG-MIN
-11 4.11,0.14,		,"11120TSE 501100 	比較觀點下的亞洲經濟發展 Asian Economic Development in Comparative Perspective 	, 陳添枝 CHEN, TAIN-JY",8,90.00,2.78
+11120TSE 500500,書報討論二：二十一世紀的議題及構想,Seminar II: Issues and Ideas of the 21st Century 	,"蔡中民 TSAI, CHUNG-MIN",11,4.11,0.14
+11120TSE 501100,比較觀點下的亞洲經濟發展,Asian Economic Development in Comparative Perspective 	,"陳添枝 CHEN, TAIN-JY",8,90.00,2.78
 11120TSE 501200,國際政治經濟,International Political Economy 	,"客座教授 ",19,87.79,4.95
 11120TSE 502300,亞洲的政府與發展：戰後台灣個案研究,State and Development in Asia: Case study in Postwar Taiwan 	,"趙相科 CHAO, HSIANG-KE",6,4.30,0.00
 11120TSE 502500,亞洲的政府與政治,Government and Politics in Asia 	,"客座教授 ",10,3.51,1.19
@@ -2720,5 +2720,5 @@ HWA 18,3.99,	0.37 		,"11120PE 112024 	籃球 Basketball 	, 謝佩君 HSIEH, PEI-
 11120UPMT300300 組織行為,Organizational,Behavior 	,"林舒予 LIN, SHUYEU",37,78.38,8.90
 11120UPMT300500 人力資源管理,Human,Resource Management 	,"洪華薇 HUNG, HUA-WEI",53,3.82,0.34
 11120UPMT300600 數位經濟新創事業導論,Introduction,to new venture creation in the digital economy 	,"郭展榮 KUO,CHAN-JUNG",16,87.63,6.94
-11120UPMT300700 領導者精神:理論與哈佛管理個案研討,Leadership,Development: Theory and Harvard Business Case Study 	,"劉宛淯 GRACE LIU",10,94.00,2.57
+11120UPMT300700 領導者精神：理論與哈佛管理個案研討,Leadership,Development: Theory and Harvard Business Case Study 	,"劉宛淯 GRACE LIU",10,94.00,2.57
 11120UPMT400300 企業架構流程與管理,Enterprise,Architecture and Management 	,"洪建儒 HUNG, CHIEN-JU",14,4.08,0.26
