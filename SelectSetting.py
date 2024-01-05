@@ -49,8 +49,8 @@ while True:
         break
 
 ###讀取Excel檔案
-file_path = './data/all_done.xlsx'
-df = pd.read_excel(file_path)
+file_path = './data/all_done.csv'
+df = pd.read_csv(file_path)
 
 ###讀取各系資料並排除資料欄有空缺的課
 ###資工系課
