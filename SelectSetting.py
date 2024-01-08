@@ -2,6 +2,7 @@ import pandas as pd
 
 print("此排課程式目標為達到資工系的畢業門檻")
 
+EnglishNameList = []
 ###選擇科系
 while True:
     print("請選擇想額外修習的科系(預設已包含資工系、電資學院、通識、英語、大學中文)")
@@ -56,6 +57,24 @@ while True:
         print("\n")
         break
 
+while True:
+    print("請輸入2種不同想修習的選修英文類型")
+    print("1 演說與簡報     2 新聞英文選讀     3 短篇故事選讀     4 影視英語聽講     5 中英口譯     6 職場英語寫作    7 小說選讀     8 中英文筆譯     9 學術英語聽力     10 職場英語口語表達")
+    EnglishTypeNumber = input("請輸入代碼(以空白為間隔並以換行為結束):")
+    EnglishTypeNumberList = EnglishTypeNumber.split(" ")
+    ###確認輸入無誤
+    if len(EnglishTypeNumberList) != 2:
+        print("輸入有誤請重新輸入")
+        print("\n")
+        continue
+    elif EnglishTypeNumberList[0] == EnglishTypeNumberList[1]:
+        print("輸入有誤請重新輸入")
+        print("\n")
+        continue
+    else:
+        print("\n")
+        break
+
 ###讀取Excel檔案
 file_path = './data/all_done.csv'
 df = pd.read_csv(file_path)
@@ -90,10 +109,10 @@ GEclassData = GEclassData[['科號', '中文課名', '通識分類', '學分', '
 # print(GEclassData)
 
 ###英文課
-LANGclassData = df[df['系所全名'] == '英語教育中心(110起)'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+LANGclassData = df[(df['系所全名'] == '英語教育中心(110起)') | (df['系所全名'] == '英語教育中心')].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
 LANGclassData['教師'] = LANGclassData['教師'].fillna('')
 LANGclassData['等級制'] = LANGclassData['等級制'].fillna(0)
-LANGclassData = df[df['系所全名'] == '英語教育中心(110起)'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+LANGclassData = df[(df['系所全名'] == '英語教育中心(110起)') | (df['系所全名'] == '英語教育中心')].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
 LANGclassData['教師'] = LANGclassData['教師'].fillna('')
 LANGclassData['等級制'] = LANGclassData['等級制'].fillna(0)
 LANGclassData = LANGclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
@@ -223,6 +242,107 @@ if "2" in SelectNumberList:
     AllCoursesData = pd.concat([AllCoursesData, PHYSclassData], ignore_index=True)
     # print(AllCoursesData)
     # print(AllCoursesData)
+
+###選修英文
+if "1" in EnglishTypeNumberList:
+    EnglishNameList += ['中高級選讀英文-演說與簡報']
+    LANGTmpclassData = df[df['中文課名'] == '中高級選讀英文-演說與簡報'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+    LANGTmpclassData['教師'] = LANGTmpclassData['教師'].fillna('')
+    LANGTmpclassData['等級制'] = LANGTmpclassData['等級制'].fillna(0)
+    LANGTmpclassData = LANGTmpclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+    # print(PHYSclassData)
+    # print(PHYSclassData)
+    AllCoursesData = pd.concat([AllCoursesData, LANGTmpclassData], ignore_index=True)
+
+if "2" in EnglishTypeNumberList:
+    EnglishNameList += ['中高級選讀英文-新聞英文選讀']
+    LANGTmpclassData = df[df['中文課名'] == '中高級選讀英文-新聞英文選讀'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+    LANGTmpclassData['教師'] = LANGTmpclassData['教師'].fillna('')
+    LANGTmpclassData['等級制'] = LANGTmpclassData['等級制'].fillna(0)
+    LANGTmpclassData = LANGTmpclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+    # print(PHYSclassData)
+    # print(PHYSclassData)
+    AllCoursesData = pd.concat([AllCoursesData, LANGTmpclassData], ignore_index=True)
+
+if "3" in EnglishTypeNumberList:
+    EnglishNameList += ['中高級選讀英文-短篇故事選讀']
+    LANGTmpclassData = df[df['中文課名'] == '中高級選讀英文-短篇故事選讀'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+    LANGTmpclassData['教師'] = LANGTmpclassData['教師'].fillna('')
+    LANGTmpclassData['等級制'] = LANGTmpclassData['等級制'].fillna(0)
+    LANGTmpclassData = LANGTmpclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+    # print(PHYSclassData)
+    # print(PHYSclassData)
+    AllCoursesData = pd.concat([AllCoursesData, LANGTmpclassData], ignore_index=True)
+
+if "4" in EnglishTypeNumberList:
+    EnglishNameList += ['中高級選讀英文-影視英語聽講']
+    LANGTmpclassData = df[df['中文課名'] == '中高級選讀英文-影視英語聽講'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+    LANGTmpclassData['教師'] = LANGTmpclassData['教師'].fillna('')
+    LANGTmpclassData['等級制'] = LANGTmpclassData['等級制'].fillna(0)
+    LANGTmpclassData = LANGTmpclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+    # print(PHYSclassData)
+    # print(PHYSclassData)
+    AllCoursesData = pd.concat([AllCoursesData, LANGTmpclassData], ignore_index=True)
+
+if "5" in EnglishTypeNumberList:
+    EnglishNameList += ['中高級選讀英文-中英口譯']
+    LANGTmpclassData = df[df['中文課名'] == '中高級選讀英文-中英口譯'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+    LANGTmpclassData['教師'] = LANGTmpclassData['教師'].fillna('')
+    LANGTmpclassData['等級制'] = LANGTmpclassData['等級制'].fillna(0)
+    LANGTmpclassData = LANGTmpclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+    # print(PHYSclassData)
+    # print(PHYSclassData)
+    AllCoursesData = pd.concat([AllCoursesData, LANGTmpclassData], ignore_index=True)
+
+if "6" in EnglishTypeNumberList:
+    EnglishNameList += ['中高級選讀英文-職場英語寫作']
+    LANGTmpclassData = df[df['中文課名'] == '中高級選讀英文-職場英語寫作'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+    LANGTmpclassData['教師'] = LANGTmpclassData['教師'].fillna('')
+    LANGTmpclassData['等級制'] = LANGTmpclassData['等級制'].fillna(0)
+    LANGTmpclassData = LANGTmpclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+    # print(PHYSclassData)
+    # print(PHYSclassData)
+    AllCoursesData = pd.concat([AllCoursesData, LANGTmpclassData], ignore_index=True)
+
+if "7" in EnglishTypeNumberList:
+    EnglishNameList += ['中高級選讀英文-小說選讀']
+    LANGTmpclassData = df[df['中文課名'] == '中高級選讀英文-小說選讀'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+    LANGTmpclassData['教師'] = LANGTmpclassData['教師'].fillna('')
+    LANGTmpclassData['等級制'] = LANGTmpclassData['等級制'].fillna(0)
+    LANGTmpclassData = LANGTmpclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+    # print(PHYSclassData)
+    # print(PHYSclassData)
+    AllCoursesData = pd.concat([AllCoursesData, LANGTmpclassData], ignore_index=True)
+
+if "8" in EnglishTypeNumberList:
+    EnglishNameList += ['中高級選讀英文-中英文筆譯']
+    LANGTmpclassData = df[df['中文課名'] == '中高級選讀英文-中英文筆譯'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+    LANGTmpclassData['教師'] = LANGTmpclassData['教師'].fillna('')
+    LANGTmpclassData['等級制'] = LANGTmpclassData['等級制'].fillna(0)
+    LANGTmpclassData = LANGTmpclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+    # print(PHYSclassData)
+    # print(PHYSclassData)
+    AllCoursesData = pd.concat([AllCoursesData, LANGTmpclassData], ignore_index=True)
+
+if "9" in EnglishTypeNumberList:
+    EnglishNameList += ['中高級選讀英文-學術英語聽力']
+    LANGTmpclassData = df[df['中文課名'] == '中高級選讀英文-學術英語聽力'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+    LANGTmpclassData['教師'] = LANGTmpclassData['教師'].fillna('')
+    LANGTmpclassData['等級制'] = LANGTmpclassData['等級制'].fillna(0)
+    LANGTmpclassData = LANGTmpclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+    # print(PHYSclassData)
+    # print(PHYSclassData)
+    AllCoursesData = pd.concat([AllCoursesData, LANGTmpclassData], ignore_index=True)
+
+if "10" in EnglishTypeNumberList:
+    EnglishNameList += ['中高級選讀英文-職場英語口語表達']
+    LANGTmpclassData = df[df['中文課名'] == '中高級選讀英文-職場英語口語表達'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+    LANGTmpclassData['教師'] = LANGTmpclassData['教師'].fillna('')
+    LANGTmpclassData['等級制'] = LANGTmpclassData['等級制'].fillna(0)
+    LANGTmpclassData = LANGTmpclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+    # print(PHYSclassData)
+    # print(PHYSclassData)
+    AllCoursesData = pd.concat([AllCoursesData, LANGTmpclassData], ignore_index=True)
 
 # print(AllCoursesData)
 # print(AllCoursesData)
