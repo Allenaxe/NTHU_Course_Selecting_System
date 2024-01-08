@@ -25,15 +25,15 @@ while True:
 ###輸入各學期學分
 while True:
     print("請輸入從大一上至大四下各學期的期望修習學分")
-    CreditList = [None] * 8
-    CreditList[0] = int(input("請輸入大一上期望修習學分:"))
-    CreditList[1] = int(input("請輸入大一下期望修習學分:"))
-    CreditList[2] = int(input("請輸入大二上期望修習學分:"))
-    CreditList[3] = int(input("請輸入大二下期望修習學分:"))
-    CreditList[4] = int(input("請輸入大三上期望修習學分:"))
-    CreditList[5] = int(input("請輸入大三下期望修習學分:"))
-    CreditList[6] = int(input("請輸入大四上期望修習學分:"))
-    CreditList[7] = int(input("請輸入大四下期望修習學分:"))
+    CreditList = [16] * 8
+    # CreditList[0] = int(input("請輸入大一上期望修習學分:"))
+    # CreditList[1] = int(input("請輸入大一下期望修習學分:"))
+    # CreditList[2] = int(input("請輸入大二上期望修習學分:"))
+    # CreditList[3] = int(input("請輸入大二下期望修習學分:"))
+    # CreditList[4] = int(input("請輸入大三上期望修習學分:"))
+    # CreditList[5] = int(input("請輸入大三下期望修習學分:"))
+    # CreditList[6] = int(input("請輸入大四上期望修習學分:"))
+    # CreditList[7] = int(input("請輸入大四下期望修習學分:"))
 
     ###確認輸入無誤
     CreditSum = 0
@@ -55,21 +55,21 @@ df = pd.read_csv(file_path)
 ###讀取各系資料並排除資料欄有空缺的課
 ###資工系課
 CSclassData = df[df['系所全名'] == '資訊工程學系'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
-CSclassData['教師'] = CSclassData['教師'].fillna('')
+CSclassData['教師'] = CSclassData['教師'].fillna(' ')
 CSclassData['等級制'] = CSclassData['等級制'].fillna(0)
 CSclassData = CSclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
 # print(CSclassData)
 
 ###電資院課
 EECSclassData = df[df['系所全名'] == '電機資訊學院學士班'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
-EECSclassData['教師'] = EECSclassData['教師'].fillna('')
+EECSclassData['教師'] = EECSclassData['教師'].fillna(' ')
 EECSclassData['等級制'] = EECSclassData['等級制'].fillna(0)
 EECSclassData = EECSclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
 # print(EECSclassData)
 
 ###通識課
 GEclassData = df[df['系所全名'] == '通識教育中心'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
-GEclassData['教師'] = GEclassData['教師'].fillna('')
+GEclassData['教師'] = GEclassData['教師'].fillna(' ')
 GEclassData['等級制'] = GEclassData['等級制'].fillna(0)
 GEclassData = GEclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
 # print(GEclassData)
