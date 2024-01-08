@@ -1,0 +1,5 @@
+*.txt
+
+.vscode
+
+__pycache__
