@@ -156,14 +156,14 @@ elif SelectType == 'D':
 AddCourseABCD = pd.DataFrame()
 listvisited = []
 for t in range(4):
-    print("t=",t)
+    # print("t=",t)
     if t == jump:
         continue
     AddCourseS = pd.DataFrame()
     for i in range(len(Type[t])):
         if Type[t][i] in listvisited:
             continue
-        print(Type[t][i])
+        # print(Type[t][i])
         AddclassData2 = df[df['中文課名'] == str(Type[t][i])].dropna(subset=['科號', '系所全名', '學分'])
         AddclassData2['教師'] = AddclassData2['教師'].fillna('')
         AddclassData2['上課時間'] = AddclassData2['上課時間'].fillna('')
@@ -173,8 +173,8 @@ for t in range(4):
         AddCourseS = pd.concat([AddCourseS, AddclassData2], ignore_index=True)
     AddCourseS = AddCourseS.nlargest(1, '等級制')
     listvisited.extend(AddCourseS['中文課名'])
-    print("listvisited = ",listvisited)
-    print(AddCourseS)
+    # print("listvisited = ",listvisited)
+    # print(AddCourseS)
     AddCourseABCD = pd.concat([AddCourseABCD, AddCourseS], ignore_index=True)
 
 
@@ -191,8 +191,8 @@ for i in range(len(listAdd2)):
     AddCourseS = pd.concat([AddCourseS, AddclassData2], ignore_index=True)
 AddCourseS = AddCourseS.nlargest(1, '等級制')
 listvisited.extend(AddCourseS['中文課名'])
-print("listvisited = ",listvisited)
-print(AddCourseS)
+# print("listvisited = ",listvisited)
+# print(AddCourseS)
 AddCourseABCD = pd.concat([AddCourseABCD, AddCourseS], ignore_index=True)
 
 #print(len(listAdd2))
