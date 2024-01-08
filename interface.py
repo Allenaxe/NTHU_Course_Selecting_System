@@ -768,7 +768,7 @@ elif '2' in SelectNumberList:
 else:
     Other = AllCoursesData[~(AllCoursesData['科號'].str.contains('MATH') | AllCoursesData['科號'].str.contains('STAT') | AllCoursesData['科號'].str.contains('PHYS'))]
 
-Other = Other[~Other['科號'].isin(result_df['科號'].values)].sort_values(by = ['等級制'], ascending = False)
+Other = Other[(~Other['科號'].isin(result_df['科號'].values)) & (~Other['中文課名'].isin(result_df['中文課名'].values))].sort_values(by = ['等級制'], ascending = False)
 
 for index, row in Other.iterrows():
     for semester in range(8):
