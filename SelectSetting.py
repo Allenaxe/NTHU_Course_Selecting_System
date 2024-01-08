@@ -54,47 +54,61 @@ df = pd.read_csv(file_path)
 
 ###讀取各系資料並排除資料欄有空缺的課
 ###資工系課
-CSclassData = df[df['系所全名'] == '資訊工程學系'].dropna(subset=['科號', '中文課名', '學分', '教師', '上課時間', '等級制'])
+CSclassData = df[df['系所全名'] == '資訊工程學系'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+CSclassData['教師'] = CSclassData['教師'].fillna('')
+CSclassData['等級制'] = CSclassData['等級制'].fillna(0)
 CSclassData = CSclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
-#print(CSclassData)
+# print(CSclassData)
 
 ###電資院課
-EECSclassData = df[df['系所全名'] == '電機資訊學院學士班'].dropna(subset=['科號', '中文課名', '學分', '教師', '上課時間', '等級制'])
+EECSclassData = df[df['系所全名'] == '電機資訊學院學士班'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+EECSclassData['教師'] = EECSclassData['教師'].fillna('')
+EECSclassData['等級制'] = EECSclassData['等級制'].fillna(0)
 EECSclassData = EECSclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
-#print(EECSclassData)
+# print(EECSclassData)
 
 ###通識課
-GEclassData = df[df['系所全名'] == '通識教育中心'].dropna(subset=['科號', '中文課名', '學分', '教師', '上課時間', '等級制'])
+GEclassData = df[df['系所全名'] == '通識教育中心'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+GEclassData['教師'] = GEclassData['教師'].fillna('')
+GEclassData['等級制'] = GEclassData['等級制'].fillna(0)
 GEclassData = GEclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
-#print(GEclassData)
+# print(GEclassData)
 
 ###英文課
-LANGclassData = df[df['系所全名'] == '英語教育中心(110起)'].dropna(subset=['科號', '中文課名', '學分', '教師', '上課時間', '等級制'])
+LANGclassData = df[df['系所全名'] == '英語教育中心(110起)'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+LANGclassData['教師'] = LANGclassData['教師'].fillna('')
+LANGclassData['等級制'] = LANGclassData['等級制'].fillna(0)
 LANGclassData = LANGclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
-#print(LANGclassData)
+# print(LANGclassData)
 
 ###大學中文
-CLclassData = df[(df['系所全名'] == '中國文學系') & (df['中文課名'] == '大學中文')].dropna(subset=['科號', '中文課名', '學分', '教師', '上課時間', '等級制'])
+CLclassData = df[(df['系所全名'] == '中國文學系') & (df['中文課名'] == '大學中文')].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+CLclassData['教師'] = CLclassData['教師'].fillna('')
+CLclassData['等級制'] = CLclassData['等級制'].fillna(0)
 CLclassData =CLclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
-#print(CLclassData)
+# print(CLclassData)
 
 AllCoursesData = pd.concat([CSclassData, EECSclassData, GEclassData, LANGclassData, CLclassData], ignore_index=True)
-#print(AllCoursesData)
+# print(AllCoursesData)
 
 ###數學課
 if "1" in SelectNumberList:
-    MATHclassData = df[df['系所全名'] == '數學系'].dropna(subset=['科號', '中文課名', '學分', '教師', '上課時間', '等級制'])
+    MATHclassData = df[df['系所全名'] == '數學系'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+    MATHclassData['教師'] = MATHclassData['教師'].fillna('')
+    MATHclassData['等級制'] = MATHclassData['等級制'].fillna(0)
     MATHclassData = MATHclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
-    #print(MATHclassData)
+    # print(MATHclassData)
     AllCoursesData = pd.concat([AllCoursesData, MATHclassData], ignore_index=True)
-    #print(AllCoursesData)
+    # print(AllCoursesData)
 
 ###物理課
 if "2" in SelectNumberList:
-    PHYSclassData = df[df['系所全名'] == '物理學系'].dropna(subset=['科號', '中文課名', '學分', '教師', '上課時間', '等級制'])
+    PHYSclassData = df[df['系所全名'] == '物理學系'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+    PHYSclassData['教師'] = PHYSclassData['教師'].fillna('')
+    PHYSclassData['等級制'] = PHYSclassData['等級制'].fillna(0)
     PHYSclassData = PHYSclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
-    #print(PHYSclassData)
+    # print(PHYSclassData)
     AllCoursesData = pd.concat([AllCoursesData, PHYSclassData], ignore_index=True)
-    #print(AllCoursesData)
+    # print(AllCoursesData)
 
-print(AllCoursesData)
+# print(AllCoursesData)
