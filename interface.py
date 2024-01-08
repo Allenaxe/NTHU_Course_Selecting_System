@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 import time
 import numpy as np
-
+from itertools import accumulate
 
 
 def choose_departments():
@@ -13,7 +13,7 @@ def choose_departments():
     st.sidebar.write("1 數學系     2 物理系   3 無額外修習其他系")
     counter += 1
     key = f"input{counter}"
-    SelectNumber = st.sidebar.text_input("請輸入科系代碼(多選請以空白為間隔並以換行為結束):",key=key,value=3)
+    SelectNumber = st.sidebar.text_input("請輸入科系代碼(多選請以空白為間隔並以換行為結束):",key=key,value='3')
     SelectNumberList = SelectNumber.split(" ")
 
 
@@ -86,7 +86,7 @@ def enter_expected_credits():
     return CreditList
 
 
-def filter_and_concat_courses(df, SelectNumberList):
+def filter_and_concat_courses(df, SelectNumberList,EnglishNameList):
     CSclassData = df[df['系所全名'] == '資訊工程學系'].dropna(subset=['科號', '中文課名', '學分'])
     CSclassData['教師'] = CSclassData['教師'].fillna('')
     CSclassData['上課時間'] = CSclassData['上課時間'].fillna('')
@@ -112,15 +112,15 @@ def filter_and_concat_courses(df, SelectNumberList):
     GEclassData = df[df['系所全名'] == '通識教育中心'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
     GEclassData['教師'] = GEclassData['教師'].fillna('')
     GEclassData['等級制'] = GEclassData['等級制'].fillna(0)
-    GEclassData = GEclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+    GEclassData = GEclassData[['科號', '中文課名', '通識分類', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
     # print(GEclassData)
     # print(GEclassData)
 
     ###英文課
-    LANGclassData = df[df['系所全名'] == '英語教育中心(110起)'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+    LANGclassData = df[(df['系所全名'] == '英語教育中心(110起)') | (df['系所全名'] == '英語教育中心')].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
     LANGclassData['教師'] = LANGclassData['教師'].fillna('')
     LANGclassData['等級制'] = LANGclassData['等級制'].fillna(0)
-    LANGclassData = df[df['系所全名'] == '英語教育中心(110起)'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+    LANGclassData = df[(df['系所全名'] == '英語教育中心(110起)') | (df['系所全名'] == '英語教育中心')].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
     LANGclassData['教師'] = LANGclassData['教師'].fillna('')
     LANGclassData['等級制'] = LANGclassData['等級制'].fillna(0)
     LANGclassData = LANGclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
@@ -182,7 +182,119 @@ def filter_and_concat_courses(df, SelectNumberList):
         # print(AllCoursesData)
         # print(AllCoursesData)
 
+    if "1" in EnglishNameList:
+        EnglishNameList += ['中高級選讀英文-演說與簡報']
+        LANGTmpclassData = df[df['中文課名'] == '中高級選讀英文-演說與簡報'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+        LANGTmpclassData['教師'] = LANGTmpclassData['教師'].fillna('')
+        LANGTmpclassData['等級制'] = LANGTmpclassData['等級制'].fillna(0)
+        LANGTmpclassData = LANGTmpclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+        # print(PHYSclassData)
+        # print(PHYSclassData)
+        AllCoursesData = pd.concat([AllCoursesData, LANGTmpclassData], ignore_index=True)
+
+    if "2" in EnglishNameList:
+        EnglishNameList += ['中高級選讀英文-新聞英文選讀']
+        LANGTmpclassData = df[df['中文課名'] == '中高級選讀英文-新聞英文選讀'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+        LANGTmpclassData['教師'] = LANGTmpclassData['教師'].fillna('')
+        LANGTmpclassData['等級制'] = LANGTmpclassData['等級制'].fillna(0)
+        LANGTmpclassData = LANGTmpclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+        # print(PHYSclassData)
+        # print(PHYSclassData)
+        AllCoursesData = pd.concat([AllCoursesData, LANGTmpclassData], ignore_index=True)
+
+    if "3" in EnglishNameList:
+        EnglishNameList += ['中高級選讀英文-短篇故事選讀']
+        LANGTmpclassData = df[df['中文課名'] == '中高級選讀英文-短篇故事選讀'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+        LANGTmpclassData['教師'] = LANGTmpclassData['教師'].fillna('')
+        LANGTmpclassData['等級制'] = LANGTmpclassData['等級制'].fillna(0)
+        LANGTmpclassData = LANGTmpclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+        # print(PHYSclassData)
+        # print(PHYSclassData)
+        AllCoursesData = pd.concat([AllCoursesData, LANGTmpclassData], ignore_index=True)
+
+    if "4" in EnglishNameList:
+        EnglishNameList += ['中高級選讀英文-影視英語聽講']
+        LANGTmpclassData = df[df['中文課名'] == '中高級選讀英文-影視英語聽講'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+        LANGTmpclassData['教師'] = LANGTmpclassData['教師'].fillna('')
+        LANGTmpclassData['等級制'] = LANGTmpclassData['等級制'].fillna(0)
+        LANGTmpclassData = LANGTmpclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+        # print(PHYSclassData)
+        # print(PHYSclassData)
+        AllCoursesData = pd.concat([AllCoursesData, LANGTmpclassData], ignore_index=True)
+
+    if "5" in EnglishNameList:
+        EnglishNameList += ['中高級選讀英文-中英口譯']
+        LANGTmpclassData = df[df['中文課名'] == '中高級選讀英文-中英口譯'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+        LANGTmpclassData['教師'] = LANGTmpclassData['教師'].fillna('')
+        LANGTmpclassData['等級制'] = LANGTmpclassData['等級制'].fillna(0)
+        LANGTmpclassData = LANGTmpclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+        # print(PHYSclassData)
+        # print(PHYSclassData)
+        AllCoursesData = pd.concat([AllCoursesData, LANGTmpclassData], ignore_index=True)
+
+    if "6" in EnglishNameList:
+        EnglishNameList += ['中高級選讀英文-職場英語寫作']
+        LANGTmpclassData = df[df['中文課名'] == '中高級選讀英文-職場英語寫作'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+        LANGTmpclassData['教師'] = LANGTmpclassData['教師'].fillna('')
+        LANGTmpclassData['等級制'] = LANGTmpclassData['等級制'].fillna(0)
+        LANGTmpclassData = LANGTmpclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+        # print(PHYSclassData)
+        # print(PHYSclassData)
+        AllCoursesData = pd.concat([AllCoursesData, LANGTmpclassData], ignore_index=True)
+
+    if "7" in EnglishNameList:
+        EnglishNameList += ['中高級選讀英文-小說選讀']
+        LANGTmpclassData = df[df['中文課名'] == '中高級選讀英文-小說選讀'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+        LANGTmpclassData['教師'] = LANGTmpclassData['教師'].fillna('')
+        LANGTmpclassData['等級制'] = LANGTmpclassData['等級制'].fillna(0)
+        LANGTmpclassData = LANGTmpclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+        # print(PHYSclassData)
+        # print(PHYSclassData)
+        AllCoursesData = pd.concat([AllCoursesData, LANGTmpclassData], ignore_index=True)
+
+    if "8" in EnglishNameList:
+        EnglishNameList += ['中高級選讀英文-中英文筆譯']
+        LANGTmpclassData = df[df['中文課名'] == '中高級選讀英文-中英文筆譯'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+        LANGTmpclassData['教師'] = LANGTmpclassData['教師'].fillna('')
+        LANGTmpclassData['等級制'] = LANGTmpclassData['等級制'].fillna(0)
+        LANGTmpclassData = LANGTmpclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+        # print(PHYSclassData)
+        # print(PHYSclassData)
+        AllCoursesData = pd.concat([AllCoursesData, LANGTmpclassData], ignore_index=True)
+
+    if "9" in EnglishNameList:
+        EnglishNameList += ['中高級選讀英文-學術英語聽力']
+        LANGTmpclassData = df[df['中文課名'] == '中高級選讀英文-學術英語聽力'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+        LANGTmpclassData['教師'] = LANGTmpclassData['教師'].fillna('')
+        LANGTmpclassData['等級制'] = LANGTmpclassData['等級制'].fillna(0)
+        LANGTmpclassData = LANGTmpclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+        # print(PHYSclassData)
+        # print(PHYSclassData)
+        AllCoursesData = pd.concat([AllCoursesData, LANGTmpclassData], ignore_index=True)
+
+    if "10" in EnglishNameList:
+        EnglishNameList += ['中高級選讀英文-職場英語口語表達']
+        LANGTmpclassData = df[df['中文課名'] == '中高級選讀英文-職場英語口語表達'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+        LANGTmpclassData['教師'] = LANGTmpclassData['教師'].fillna('')
+        LANGTmpclassData['等級制'] = LANGTmpclassData['等級制'].fillna(0)
+        LANGTmpclassData = LANGTmpclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+        # print(PHYSclassData)
+        # print(PHYSclassData)
+        AllCoursesData = pd.concat([AllCoursesData, LANGTmpclassData], ignore_index=True)
+
+
     return AllCoursesData
+
+
+def load_GE(df):
+    ###通識課
+    GEclassData = df[df['系所全名'] == '通識教育中心'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
+    GEclassData['教師'] = GEclassData['教師'].fillna('')
+    GEclassData['等級制'] = GEclassData['等級制'].fillna(0)
+    GEclassData = GEclassData[['科號', '中文課名', '通識分類', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+    # print(GEclassData)
+    # print(GEclassData)
+    return GEclassData
 
 
 def get_ABCD_highest_course(df, SelectType):
@@ -258,7 +370,7 @@ def get_ABCD_highest_course(df, SelectType):
 def choose_want_course():
     global counter
     st.sidebar.header("請選擇想選擇的課")
-    st.sidebar.write("X 普通物理B Y 普通化學 Z 生命科學")
+    st.sidebar.write("X: 普通物理B Y: 普通化學 Z: 生命科學")
     counter += 1
     key = f"input{counter}"
     SelectCourse = st.sidebar.text_input("請輸入代碼:",key=key,value='X')
@@ -273,8 +385,8 @@ def choose_want_course():
 
 def choose_not_ABCD():
     global counter
-    st.sidebar.header("請選擇不想要的類別")
-    st.sidebar.write("A A類    B B類    C C類    D D類")
+    st.sidebar.header("請選擇不想要的專業選修類別")
+    st.sidebar.write("A: A類選修    B: B類選修    C: C類選修    D: D類選修")
     counter += 1
     key = f"input{counter}"
     NotSelectType = st.sidebar.text_input("請輸入代碼:",key=key,value='A')
@@ -285,6 +397,29 @@ def choose_not_ABCD():
         st.toast('輸入成功', icon='💾')
 
     return str(NotSelectType)
+
+
+def choose_EngType():
+    global counter
+    st.sidebar.header("請輸入2種不同想修習的選修英文類型")
+    st.sidebar.write("1 演說與簡報     2 新聞英文選讀     3 短篇故事選讀     4 影視英語聽講     5 中英口譯     6 職場英語寫作    7 小說選讀     8 中英文筆譯     9 學術英語聽力     10 職場英語口語表達")
+    counter += 1
+    key = f"input{counter}"
+    EnglishTypeNumber = st.sidebar.text_input("請輸入代碼(以空白為間隔並以換行為結束):",key=key,value='1 2')
+    EnglishTypeNumberList = EnglishTypeNumber.split(" ")
+
+    counter += 1
+    key = f"input{counter}"
+    if st.sidebar.button("Submit",key=key):
+        if len(EnglishTypeNumberList) != 2:
+            st.error("輸入有誤請重新輸入")
+
+        elif EnglishTypeNumberList[0] == EnglishTypeNumberList[1]:
+            st.error("輸入有誤請重新輸入")
+        else:
+            st.toast('輸入成功', icon='💾')
+
+    return EnglishTypeNumberList
 
 
 def set_null_time_schedule():
@@ -323,7 +458,8 @@ def fill_in_time_schedule(dataframe,result_df):
         for (row, col) in row_col_list:
             # print(row)
             # print(col)
-            dataframe[row][col] = f"{result_df.iloc[num]['中文課名']}  {result_df.iloc[num]['教師']} {result_df.iloc[num]['上課時間']}"
+            dataframe[row][col] = f"{result_df.iloc[num]['中文課名']}  {result_df.iloc[num]['教師']} "
+            # {result_df.iloc[num]['上課時間']}
             # print(data[row][col])
     
     return dataframe
@@ -343,14 +479,18 @@ SelectNumberList = choose_departments()
 SelectCourse = choose_want_course()
 ###選擇不想要的類別
 SelectType = choose_not_ABCD()
+###輸入不同想修的選修英文
+EnglishNameList = choose_EngType()
 ###選每學期期望學分
 CreditList = enter_expected_credits()
 
 ###讀取Excel檔案
 file_path = './data/all_done.csv'
 df = pd.read_csv(file_path)
+###存通識(後面會用到)
+GEclassData = load_GE(df)
 ###得到可選擇課程
-AllCoursesData = filter_and_concat_courses(df,SelectNumberList)
+AllCoursesData = filter_and_concat_courses(df,SelectNumberList,EnglishNameList)
 AddCourseABCD = get_ABCD_highest_course(df,SelectType)
 
 counter += 1
@@ -381,9 +521,7 @@ number_mapping = {'1': 0, '2': 1, '3': 2, '4': 3, 'n': 4, '5': 5, '6': 6, '7': 7
 file_path = './data/cslearn.csv'
 df = pd.read_csv(file_path)
 
-# 中文課名, 科號, 類別
-MustclassData = df[(df['類別'] == '1') | (df['類別'] == 'X') | (df['類別'].isin(['A', 'B', 'C', 'D']))]
-MustclassData = MustclassData[['科號', '中文課名', '類別']].reset_index(drop=True)
+df = pd.concat((df, pd.DataFrame({'中文課名':[EnglishNameList[0], EnglishNameList[1]], '科號':['-1','-1'], '類別':['1','1']})),  ignore_index=True)
 
 # 創建字串陣列（8*7*13），初始值為 None
 course_codes = np.full((8, 7, 13), None)
@@ -391,11 +529,9 @@ course_codes = np.full((8, 7, 13), None)
 credit = [0 for i in range(0, 8)]
 course_list = [pd.DataFrame() for i in range(8)]
 
-highest_ranked_courses = []
-sum = []
-for i in range(8):
-    sum.append(0)
-#print(SelectCourse , SelectType)
+result_df = pd.DataFrame()
+
+AllCourses = []
 
 ABCDsum = 0
 for type in range(3):
@@ -425,6 +561,7 @@ for type in range(3):
 
         while True:
             if len(temp_max_rank_course) < rank_to_find:
+                # print(row['中文課名'])
                 break
 
             max_rank_course = temp_max_rank_course.nlargest(rank_to_find, '等級制').iloc[rank_to_find - 1:rank_to_find].copy()
@@ -454,8 +591,9 @@ for type in range(3):
                         course_codes[semester, time[0], time[1]] = max_rank_course['中文課名'].iloc[0]
 
                     credit[semester] += max_rank_course['學分'].iloc[0]
+                    AllCourses.append(max_rank_course['科號'].iloc[0])
                     course_list[semester] = pd.concat([course_list[semester], max_rank_course], ignore_index = True)
-                    highest_ranked_courses.append(max_rank_course)
+                    result_df = pd.concat([result_df, max_rank_course], ignore_index = True)
 
                     find_flag = True
 
@@ -470,63 +608,95 @@ for type in range(3):
 
             rank_to_find += 1
 
-##### 專業課程ABCD類
-# TODO: 目前是所有ABCD類的每一堂課程都會找出最高分
-# 應該要ABCD類至少選3類，學分加起來12
-# '''
-# for category in ['A', 'B', 'C', 'D']:
-#     category_data = MustclassData[MustclassData['類別'] == category]
-#     # 如果該類別沒有課程，則繼續下一個類別
-#     for index, row in category_data.iterrows():
-#         rank_to_find = 1
-#         if row['科號'] == '-1':
-#             temp_max_rank_course = AllCoursesData.loc[AllCoursesData['中文課名'] == row['中文課名']]
-#         else:
-#             temp_max_rank_course = AllCoursesData.loc[AllCoursesData['科號'].astype(str).str.contains(str(row['科號']))]
-#         while True:
-#             if len(temp_max_rank_course) < rank_to_find:
-#                 break
-#             max_rank_course = temp_max_rank_course.nlargest(rank_to_find, '等級制').iloc[rank_to_find - 1:rank_to_find].copy()
-#             # 將上課時間映射到數字
-#             time = max_rank_course['上課時間'].iloc[0].replace(',', '')
+# TODO: 校定必修(英文，通識，體育)
+        
+GEC1 = pd.DataFrame(GEclassData[GEclassData['通識分類'].str.contains('核心通識CoreGEcourses1')]).sort_values(by = ['等級制'], ascending = False)
+GEC2 = pd.DataFrame(GEclassData[GEclassData['通識分類'].str.contains('核心通識CoreGEcourses2')]).sort_values(by = ['等級制'], ascending = False)
+GEC3 = pd.DataFrame(GEclassData[GEclassData['通識分類'].str.contains('核心通識CoreGEcourses3')]).sort_values(by = ['等級制'], ascending = False)
+GEC4 = pd.DataFrame(GEclassData[GEclassData['通識分類'].str.contains('核心通識CoreGEcourses4')]).sort_values(by = ['等級制'], ascending = False)
 
-#             # 將上課時間映射到數字
-#             time_mapping = [
-#                 [weekday_mapping[time[i]], number_mapping[time[i + 1]]]
-#                 for i in range(0, len(time) - 1, 2)
-#             ]   
-#             # 檢查上課時間是否為 False
-#             # 檢查 time_available 是否為 False
-#             find_flag = False
-#             for i in range(8):
-#                 loop_flag = False
-#                 for j in range(len(time_mapping)):
-#                     if time_available[i, time_mapping[j][0], time_mapping[j][1]] == True:
-#                         loop_flag = True
-#                         break
-#                     # 更新 time_available，將對應的時間標記為 True
-#                     if not loop_flag and int((max_rank_course['科號'].iloc[0])[-6]) == int(i/2) + 1:
-#                     for j in range(len(time_mapping)):
-#                             time_available[i, time_mapping[j][0], time_mapping[j][1]] = True
-#                             course_codes[i, time_mapping[j][0], time_mapping[j][1]] = max_rank_course['中文課名']
-#                     # 將找到的課程加入最終列表
-#                         highest_ranked_courses.append(max_rank_course)
-#                         find_flag = True
-#                 if type == 2:
-#                     ABCDsum += 1
-#                     if ABCDsum >= 3:
-#                         break
-#                         break
-#                 if find_flag:
-#                     break
+GE_list = []
+GE_Credit = 0
 
-#                 # 找下一個等級制最高的課程
-#                 rank_to_find += 1
-# '''
+for GEC in [GEC1, GEC2, GEC3, GEC4]:
+    for index, row in GEC.iterrows():
+        GE_flag = False
+        for semester in range(8):
 
+            if int(row['科號'][3]) & 1 != (semester + 1) & 1:
+                continue
 
-# 將結果轉換為 DataFrame
-result_df = pd.concat(highest_ranked_courses, ignore_index=True)
+            if credit[semester] + row['學分'] > CreditList[semester]:
+                continue
+
+            time = row['上課時間'].replace(',', '')
+            
+            time_mapping = [
+                [weekday_mapping[time[i]], number_mapping[time[i + 1]]]
+                for i in range(0, len(time) - 1, 2)
+            ]
+
+            loop_flag = False
+
+            for time in time_mapping:
+                if course_codes[semester, time[0], time[1]]:
+                    loop_flag = True
+                    break
+
+            if loop_flag:
+                break
+
+            for time in time_mapping:
+                course_codes[semester, time[0], time[1]] = row['中文課名']
+            GE_list.append(row['科號'])
+            GE_Credit += row['學分']
+            credit[semester] += row['學分']
+            result_df = pd.concat([result_df, row.to_frame().T], ignore_index = True)
+            course_list[semester] = pd.concat([course_list[semester], row.to_frame().T.drop(columns = ['通識分類'])], ignore_index = True)
+            GE_flag = True
+            break
+        if GE_flag:
+            break
+
+GE = GEclassData[~GEclassData['科號'].isin(GE_list)].sort_values(by = ['等級制'], ascending = False)
+
+for index, row in GE.iterrows():
+    if GE_Credit >= 20:
+        break
+    for semester in range(8):
+
+        if int(row['科號'][3]) & 1 != (semester + 1) & 1:
+            continue
+
+        if credit[semester] + row['學分'] > CreditList[semester]:
+            continue
+
+        time = row['上課時間'].replace(',', '')
+            
+        time_mapping = [
+            [weekday_mapping[time[i]], number_mapping[time[i + 1]]]
+            for i in range(0, len(time) - 1, 2)
+        ]
+
+        loop_flag = False
+
+        for time in time_mapping:
+            if course_codes[semester, time[0], time[1]]:
+                loop_flag = True
+                break
+
+        if loop_flag:
+            break
+
+        for time in time_mapping:
+            course_codes[semester, time[0], time[1]] = row['中文課名']
+        GE_list.append(row['科號'])
+        GE_Credit += row['學分']
+        credit[semester] += row['學分']
+        result_df = pd.concat([result_df, row.to_frame().T], ignore_index = True)
+        course_list[semester] = pd.concat([course_list[semester], row.to_frame().T.drop(columns = ['通識分類'])], ignore_index = True)
+        GE_flag = True
+        break
 
 ##### 電機資訊專業選修
 # TODO: 
@@ -541,46 +711,100 @@ for prefix in target_prefixes:
     prefix_courses = prefix_courses[~prefix_courses['科號'].isin(result_df['科號'].values)]
 
     AllSelectedCourse = pd.concat([AllSelectedCourse, prefix_courses], ignore_index = True)
-    # 根據等級制對所有該前綴的課程進行排序
-    # prefix_courses = prefix_courses.sort_values('等級制', ascending=False)
 
-    # for index, row in prefix_courses.iterrows():
-    #     if selected_credit + row['學分'] > 21:
-    #         continue  # 如果加上這門課的學分超過21，跳過這門課
+AllSelectedCourse = AllSelectedCourse.sort_values(by = ['等級制'], ascending = False)
+AllSelectedCourse = AllSelectedCourse[~AllSelectedCourse['中文課名'].str.contains('專題')]
+AllSelectedCourse = AllSelectedCourse[~AllSelectedCourse['中文課名'].str.contains('書報討論')]
 
-    #     # 將上課時間映射到數字
-    #     time = row['上課時間'].replace(',', '')
-    #     time_mapping = [
-    #         [weekday_mapping[time[i]], number_mapping[time[i + 1]]]
-    #         for i in range(0, len(time) - 1, 2)
-    #     ]
+for index, row in AllSelectedCourse.iterrows():
+    if selected_credit > 12:
+        break
+    for semester in range(8):
+        if int(row['科號'][-6]) != (semester >> 1) + 1:
+            continue
 
-    #     # 檢查上課時間是否衝突
-    #     conflict = False
-    #     for i in range(8):
-    #         for j in range(len(time_mapping)):
-    #             if time_available[i, time_mapping[j][0], time_mapping[j][1]]:
-    #                 conflict = True
-    #                 break
-    #         if conflict:
-    #             break
+        if int(row['科號'][3]) & 1 != (semester + 1) & 1:
+            continue
 
-    #     if not conflict:
-    #         # 如果沒有衝突，標記該課程的時間為佔用，並加入最終列表
-    #         for j in range(len(time_mapping)):
-    #             time_available[i, time_mapping[j][0], time_mapping[j][1]] = True
-    #         highest_ranked_courses.append(row)
-    #         selected_credit += row['學分']
-    #         break  # 找到符合條件的課程後，跳出循環
+        if credit[semester] + row['學分'] > CreditList[semester]:
+            continue
 
-    #     if selected_credit >= 21:
-    #         break  # 如果已經達到21學分，跳出循環
-print('####')
-print(AllSelectedCourse)
+        time = row['上課時間'].replace(',', '')
+        
+        time_mapping = [
+            [weekday_mapping[time[i]], number_mapping[time[i + 1]]]
+            for i in range(0, len(time) - 1, 2)
+        ]
 
-# TODO: 校定必修(英文，通識，體育)
+        loop_flag = False
+
+        for time in time_mapping:
+            if course_codes[semester, time[0], time[1]]:
+                loop_flag = True
+                break
+
+        if loop_flag:
+            break
+
+        for time in time_mapping:
+            course_codes[semester, time[0], time[1]] = row['中文課名']
+        selected_credit += row['學分']
+        credit[semester] += row['學分']
+        result_df = pd.concat([result_df, row.to_frame().T], ignore_index = True)
+        course_list[semester] = pd.concat([course_list[semester], row.to_frame().T], ignore_index = True)
+        break
 
 # TODO: 其餘選修
+    
+if '1' in SelectNumberList and '2' in SelectNumberList:
+    Other = AllCoursesData[AllCoursesData['科號'].str.contains('MATH') | AllCoursesData['科號'].str.contains('STAT') | AllCoursesData['科號'].str.contains('PHYS')]
+
+elif '1' in SelectNumberList:
+    Other = AllCoursesData[AllCoursesData['科號'].str.contains('MATH') | AllCoursesData['科號'].str.contains('STAT')]
+
+elif '2' in SelectNumberList:
+    Other = AllCoursesData[AllCoursesData['科號'].str.contains('PHYS')]
+
+else:
+    Other = AllCoursesData[~(AllCoursesData['科號'].str.contains('MATH') | AllCoursesData['科號'].str.contains('STAT') | AllCoursesData['科號'].str.contains('PHYS'))]
+
+Other = Other[~Other['科號'].isin(result_df['科號'].values)].sort_values(by = ['等級制'], ascending = False)
+
+for index, row in Other.iterrows():
+    for semester in range(8):
+        if int(row['科號'][-6]) != (semester >> 1) + 1:
+            continue
+
+        if int(row['科號'][3]) & 1 != (semester + 1) & 1:
+            continue
+
+        if credit[semester] >= CreditList[semester]:
+            continue
+
+        time = row['上課時間'].replace(',', '')
+        
+        time_mapping = [
+            [weekday_mapping[time[i]], number_mapping[time[i + 1]]]
+            for i in range(0, len(time) - 1, 2)
+        ]
+
+        loop_flag = False
+
+        for time in time_mapping:
+            if course_codes[semester, time[0], time[1]]:
+                loop_flag = True
+                break
+
+        if loop_flag:
+            break
+
+        for time in time_mapping:
+            course_codes[semester, time[0], time[1]] = row['中文課名']
+        selected_credit += row['學分']
+        credit[semester] += row['學分']
+        result_df = pd.concat([result_df, row.to_frame().T], ignore_index = True)
+        course_list[semester] = pd.concat([course_list[semester], row.to_frame().T], ignore_index = True)
+        break
 
 # 顯示最高等級的課程
 # print("最高等級制的課程:")
@@ -601,10 +825,14 @@ for semester in range(8):
                 day_schedule.append(str(course_code))  # Ensure it's a string
             else:
                 day_schedule.append("--")
-        # print("Day {}: {}".format(day, ' '.join(day_schedule)))
+    #     print("Day {}: {}".format(day, ' '.join(day_schedule)))
     # print("\n")
 
-print(course_list)
+# for course in course_list:
+#     print(course)
+
+print("總學分： ", list(accumulate(credit))[7])
+print(credit)
 # print(course_list[0])
 # print(course_list[0]['上課時間'])
 # print(course_list[0]['上課時間'][0])
@@ -631,52 +859,54 @@ if st.button("顯示推薦課表",key=key):
     # print(df_schedule)
     # print(df_schedule['M']['1'])
 
+    st.subheader(f"總學分： {int(list(accumulate(credit))[7])}學分")
+
     ###一上課表
     one_up_data = set_null_time_schedule()
     one_up_data = fill_in_time_schedule(one_up_data,course_list[0])
     print("大一上 推薦課表")
     print(one_up_data)
-    st.subheader("大一上 推薦課表:")
+    st.subheader(f"大一上 推薦課表: {int(credit[0])}學分")
     st.table(one_up_data)
 
     ###一下課表
     one_down_data = set_null_time_schedule()
     one_down_data = fill_in_time_schedule(one_down_data,course_list[1])
-    st.subheader("大一下 推薦課表:")
+    st.subheader(f"大一下 推薦課表: {int(credit[1])}學分")
     st.table(one_down_data)
 
     ###二上課表
     two_up_data = set_null_time_schedule()
     two_up_data = fill_in_time_schedule(two_up_data,course_list[2])
-    st.subheader("大二上 推薦課表:")
+    st.subheader(f"大二上 推薦課表: {int(credit[2])}學分")
     st.table(two_up_data)
 
     ###二下課表
     two_down_data = set_null_time_schedule()
     two_down_data = fill_in_time_schedule(two_down_data,course_list[3])
-    st.subheader("大二下 推薦課表:")
+    st.subheader(f"大二下 推薦課表: {int(credit[3])}學分")
     st.table(two_down_data)
 
     ###三上課表
     three_up_data = set_null_time_schedule()
     three_up_data = fill_in_time_schedule(three_up_data,course_list[4])
-    st.subheader("大三上 推薦課表:")
+    st.subheader(f"大三上 推薦課表: {int(credit[4])}學分")
     st.table(three_up_data)
 
     ###三下課表
     three_down_data = set_null_time_schedule()
     three_down_data = fill_in_time_schedule(three_down_data,course_list[5])
-    st.subheader("大三下 推薦課表:")
+    st.subheader(f"大三下 推薦課表: {int(credit[5])}學分")
     st.table(three_down_data)
 
     ###四上課表
     four_up_data = set_null_time_schedule()
     four_up_data = fill_in_time_schedule(four_up_data,course_list[6])
-    st.subheader("大四上 推薦課表:")
+    st.subheader(f"大四上 推薦課表: {int(credit[6])}學分")
     st.table(four_up_data)
 
     ###四下課表
     four_down_data = set_null_time_schedule()
     four_down_data = fill_in_time_schedule(four_down_data,course_list[7])
-    st.subheader("大四下 推薦課表:")
+    st.subheader(f"大四下 推薦課表: {int(credit[7])}學分")
     st.table(four_down_data)
