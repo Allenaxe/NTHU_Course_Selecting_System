@@ -4,6 +4,7 @@ from SelectSetting import SelectCourse
 from SelectSetting import CreditList
 from SelectSetting import AddCourseABCD
 from SelectSetting import CreditList
+from SelectSetting import EnglishNameList
 import csv
 import os
 import pandas as pd
@@ -16,9 +17,7 @@ number_mapping = {'1': 0, '2': 1, '3': 2, '4': 3, 'n': 4, '5': 5, '6': 6, '7': 7
 file_path = './data/cslearn.csv'
 df = pd.read_csv(file_path)
 
-# 中文課名, 科號, 類別
-MustclassData = df[(df['類別'] == '1') | (df['類別'] == 'X') | (df['類別'].isin(['A', 'B', 'C', 'D']))]
-MustclassData = MustclassData[['科號', '中文課名', '類別']].reset_index(drop=True)
+df = pd.concat((df, pd.DataFrame({'中文課名':[EnglishNameList[0], EnglishNameList[1]], '科號':['-1','-1'], '類別':['1','1']})),  ignore_index=True)
 
 # 創建字串陣列（8*7*13），初始值為 None
 course_codes = np.full((8, 7, 13), None)
@@ -60,6 +59,7 @@ for type in range(3):
 
         while True:
             if len(temp_max_rank_course) < rank_to_find:
+                # print(row['中文課名'])
                 break
 
             max_rank_course = temp_max_rank_course.nlargest(rank_to_find, '等級制').iloc[rank_to_find - 1:rank_to_find].copy()
