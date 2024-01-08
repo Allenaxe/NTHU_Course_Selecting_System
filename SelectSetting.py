@@ -104,7 +104,7 @@ EECSclassData = EECSclassData[['科號', '中文課名', '學分', '教師', '�
 GEclassData = df[df['系所全名'] == '通識教育中心'].dropna(subset=['科號', '中文課名', '學分', '上課時間'])
 GEclassData['教師'] = GEclassData['教師'].fillna('')
 GEclassData['等級制'] = GEclassData['等級制'].fillna(0)
-GEclassData = GEclassData[['科號', '中文課名', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
+GEclassData = GEclassData[['科號', '中文課名', '通識分類', '學分', '教師', '上課時間', '等級制']].reset_index(drop=True)
 # print(GEclassData)
 # print(GEclassData)
 
@@ -130,7 +130,7 @@ CLclassData =CLclassData[['科號', '中文課名', '學分', '教師', '上課�
 # print(CLclassData)
 # print(CLclassData)
 
-AllCoursesData = pd.concat([CSclassData, EECSclassData, GEclassData, LANGclassData, CLclassData], ignore_index=True)
+AllCoursesData = pd.concat([CSclassData, EECSclassData, GEclassData.drop(columns = ['通識分類']), LANGclassData, CLclassData], ignore_index=True)
 # print(AllCoursesData)
 # print(AllCoursesData)
 

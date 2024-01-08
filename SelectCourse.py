@@ -5,10 +5,12 @@ from SelectSetting import CreditList
 from SelectSetting import AddCourseABCD
 from SelectSetting import CreditList
 from SelectSetting import EnglishNameList
+from SelectSetting import GEclassData
 import csv
 import os
 import pandas as pd
 import numpy as np
+from itertools import accumulate
 
 # 對照表
 weekday_mapping = {'M': 0, 'T': 1, 'W': 2, 'R': 3, 'F': 4, 'S': 5}
@@ -105,63 +107,54 @@ for type in range(3):
 
             rank_to_find += 1
 
-##### 專業課程ABCD類
-# TODO: 目前是所有ABCD類的每一堂課程都會找出最高分
-# 應該要ABCD類至少選3類，學分加起來12
-'''
-for category in ['A', 'B', 'C', 'D']:
-    category_data = MustclassData[MustclassData['類別'] == category]
-    # 如果該類別沒有課程，則繼續下一個類別
-    for index, row in category_data.iterrows():
-        rank_to_find = 1
-        if row['科號'] == '-1':
-            temp_max_rank_course = AllCoursesData.loc[AllCoursesData['中文課名'] == row['中文課名']]
-        else:
-            temp_max_rank_course = AllCoursesData.loc[AllCoursesData['科號'].astype(str).str.contains(str(row['科號']))]
-        while True:
-            if len(temp_max_rank_course) < rank_to_find:
-                break
-            max_rank_course = temp_max_rank_course.nlargest(rank_to_find, '等級制').iloc[rank_to_find - 1:rank_to_find].copy()
-            # 將上課時間映射到數字
-            time = max_rank_course['上課時間'].iloc[0].replace(',', '')
-
-            # 將上課時間映射到數字
-            time_mapping = [
-                [weekday_mapping[time[i]], number_mapping[time[i + 1]]]
-                for i in range(0, len(time) - 1, 2)
-            ]   
-            # 檢查上課時間是否為 False
-            # 檢查 time_available 是否為 False
-            find_flag = False
-            for i in range(8):
-                loop_flag = False
-                for j in range(len(time_mapping)):
-                    if time_available[i, time_mapping[j][0], time_mapping[j][1]] == True:
-                        loop_flag = True
-                        break
-                    # 更新 time_available，將對應的時間標記為 True
-                    if not loop_flag and int((max_rank_course['科號'].iloc[0])[-6]) == int(i/2) + 1:
-                    for j in range(len(time_mapping)):
-                            time_available[i, time_mapping[j][0], time_mapping[j][1]] = True
-                            course_codes[i, time_mapping[j][0], time_mapping[j][1]] = max_rank_course['中文課名']
-                    # 將找到的課程加入最終列表
-                        highest_ranked_courses.append(max_rank_course)
-                        find_flag = True
-                if type == 2:
-                    ABCDsum += 1
-                    if ABCDsum >= 3:
-                        break
-                        break
-                if find_flag:
-                    break
-
-                # 找下一個等級制最高的課程
-                rank_to_find += 1
-'''
-
 
 # 將結果轉換為 DataFrame
 result_df = pd.concat(highest_ranked_courses, ignore_index=True)
+
+# TODO: 校定必修(英文，通識，體育)
+        
+GE1 = pd.DataFrame(GEclassData[GEclassData['通識分類'].str.contains('核心通識CoreGEcourses1')]).sort_values(by = ['等級制'], ascending = False)
+GE2 = pd.DataFrame(GEclassData[GEclassData['通識分類'].str.contains('核心通識CoreGEcourses2')]).sort_values(by = ['等級制'], ascending = False)
+GE3 = pd.DataFrame(GEclassData[GEclassData['通識分類'].str.contains('核心通識CoreGEcourses3')]).sort_values(by = ['等級制'], ascending = False)
+GE4 = pd.DataFrame(GEclassData[GEclassData['通識分類'].str.contains('核心通識CoreGEcourses4')]).sort_values(by = ['等級制'], ascending = False)
+
+for GE in [GE1, GE2, GE3, GE4]:
+    for index, row in GE.iterrows():
+        GE_flag = False
+        for semester in range(8):
+
+            if int(row['科號'][3]) & 1 != (semester + 1) & 1:
+                continue
+
+            if credit[semester] + row['學分'] > CreditList[semester]:
+                continue
+
+            time = row['上課時間'].replace(',', '')
+            
+            time_mapping = [
+                [weekday_mapping[time[i]], number_mapping[time[i + 1]]]
+                for i in range(0, len(time) - 1, 2)
+            ]
+
+            loop_flag = False
+
+            for time in time_mapping:
+                if course_codes[semester, time[0], time[1]]:
+                    loop_flag = True
+                    break
+
+            if loop_flag:
+                break
+
+            for time in time_mapping:
+                course_codes[semester, time[0], time[1]] = row['中文課名']
+            credit[semester] += row['學分']
+            course_list[semester] = pd.concat([course_list[semester], row.to_frame().T], ignore_index = True)
+            GE_flag = True
+            break
+        if GE_flag:
+            break 
+        
 
 ##### 電機資訊專業選修
 # TODO: 
@@ -176,44 +169,44 @@ for prefix in target_prefixes:
     prefix_courses = prefix_courses[~prefix_courses['科號'].isin(result_df['科號'].values)]
 
     AllSelectedCourse = pd.concat([AllSelectedCourse, prefix_courses], ignore_index = True)
-    # 根據等級制對所有該前綴的課程進行排序
-    # prefix_courses = prefix_courses.sort_values('等級制', ascending=False)
 
-    # for index, row in prefix_courses.iterrows():
-    #     if selected_credit + row['學分'] > 21:
-    #         continue  # 如果加上這門課的學分超過21，跳過這門課
+AllSelectedCourse = AllSelectedCourse.sort_values(by = ['等級制'], ascending = False)
+AllSelectedCourse = AllSelectedCourse[~AllSelectedCourse['中文課名'].str.contains('專題')]
+AllSelectedCourse = AllSelectedCourse[~AllSelectedCourse['中文課名'].str.contains('書報討論')]
 
-    #     # 將上課時間映射到數字
-    #     time = row['上課時間'].replace(',', '')
-    #     time_mapping = [
-    #         [weekday_mapping[time[i]], number_mapping[time[i + 1]]]
-    #         for i in range(0, len(time) - 1, 2)
-    #     ]
+for index, row in AllSelectedCourse.iterrows():
+    for semester in range(8):
+        if int(row['科號'][-6]) != (semester >> 1) + 1:
+            continue
 
-    #     # 檢查上課時間是否衝突
-    #     conflict = False
-    #     for i in range(8):
-    #         for j in range(len(time_mapping)):
-    #             if time_available[i, time_mapping[j][0], time_mapping[j][1]]:
-    #                 conflict = True
-    #                 break
-    #         if conflict:
-    #             break
+        if int(row['科號'][3]) & 1 != (semester + 1) & 1:
+            continue
 
-    #     if not conflict:
-    #         # 如果沒有衝突，標記該課程的時間為佔用，並加入最終列表
-    #         for j in range(len(time_mapping)):
-    #             time_available[i, time_mapping[j][0], time_mapping[j][1]] = True
-    #         highest_ranked_courses.append(row)
-    #         selected_credit += row['學分']
-    #         break  # 找到符合條件的課程後，跳出循環
+        if credit[semester] + row['學分'] > CreditList[semester]:
+            continue
 
-    #     if selected_credit >= 21:
-    #         break  # 如果已經達到21學分，跳出循環
-print('####')
-print(AllSelectedCourse)
+        time = row['上課時間'].replace(',', '')
+        
+        time_mapping = [
+            [weekday_mapping[time[i]], number_mapping[time[i + 1]]]
+            for i in range(0, len(time) - 1, 2)
+        ]
 
-# TODO: 校定必修(英文，通識，體育)
+        loop_flag = False
+
+        for time in time_mapping:
+            if course_codes[semester, time[0], time[1]]:
+                loop_flag = True
+                break
+
+        if loop_flag:
+            break
+
+        for time in time_mapping:
+            course_codes[semester, time[0], time[1]] = row['中文課名']
+        credit[semester] += row['學分']
+        course_list[semester] = pd.concat([course_list[semester], row.to_frame().T], ignore_index = True)
+        break
 
 # TODO: 其餘選修
 
@@ -239,4 +232,7 @@ for semester in range(8):
         print("Day {}: {}".format(day, ' '.join(day_schedule)))
     print("\n")
 
-print(course_list)
+for course in course_list:
+    print(course)
+
+print("總學分： ", list(accumulate(credit))[7])
