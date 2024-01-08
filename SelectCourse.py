@@ -1,4 +1,11 @@
 from SelectSetting import AllCoursesData
+from SelectSetting import SelectType
+from SelectSetting import SelectCourse
+from SelectSetting import CreditList
+from SelectSetting import AddCourseABCD
+from SelectSetting import CreditList
+import csv
+import os
 import pandas as pd
 import numpy as np
 
@@ -19,36 +26,59 @@ course_codes = np.full((8, 7, 13), None)
 
 credit = [0 for i in range(0, 8)]
 highest_ranked_courses = []
+sum = []
+for i in range(8):
+    sum.append(0)
+#print(SelectCourse , SelectType)
 
-##### 系訂必修+大學中文
+ABCDsum = 0
+for type in range(3):
+    MustclassData = []
+
+    if type == 0:
+        # 中文課名, 科號, 類別
+        MustclassData = df[df['類別'] == '1'].dropna(subset=['中文課名', '科號'])
+        MustclassData = MustclassData[['科號', '中文課名']].reset_index(drop=True)
+    elif type == 1:
+        # 中文課名, 科號, 類別
+        MustclassData = df[df['類別'] == SelectCourse].dropna(subset=['中文課名', '科號'])
+        MustclassData = MustclassData[['科號', '中文課名']].reset_index(drop=True)
+    elif type == 2:
+        MustclassData = AddCourseABCD
+
+    ##### 系訂必修+大學中文
 for category in ['1', 'X']:
     category_data = MustclassData[MustclassData['類別'] == category]
     for index, row in category_data.iterrows():
-        rank_to_find = 1
-        if row['科號'] == '-1':
-            temp_max_rank_course = AllCoursesData.loc[AllCoursesData['中文課名'] == row['中文課名']]
-        else:
-            temp_max_rank_course = AllCoursesData.loc[AllCoursesData['科號'].astype(str).str.contains(str(row['科號']))]
-        while True:
-            if len(temp_max_rank_course) < rank_to_find:
-                break
-            max_rank_course = temp_max_rank_course.nlargest(rank_to_find, '等級制').iloc[rank_to_find - 1:rank_to_find].copy()
-            # 將上課時間映射到數字
-            time = max_rank_course['上課時間'].iloc[0].replace(',', '')
+            rank_to_find = 1
+        #print("rank_to_find ", rank_to_find,"type = ",type)
+            if row['科號'] == '-1':
+                temp_max_rank_course = AllCoursesData.loc[AllCoursesData['中文課名'] == row['中文課名']]
+            else:
+                temp_max_rank_course = AllCoursesData.loc[AllCoursesData['科號'].astype(str).str.contains(str(row['科號']))]
+            while True:
+                if len(temp_max_rank_course) < rank_to_find:
+                    break
+                max_rank_course = temp_max_rank_course.nlargest(rank_to_find, '等級制').iloc[rank_to_find - 1:rank_to_find].copy()
+                # 將上課時間映射到數字
+                time = max_rank_course['上課時間'].iloc[0].replace(',', '')
+            school_point = int(max_rank_course['學分'].iloc[0])
 
-            # 將上課時間映射到數字
-            time_mapping = [
-                [weekday_mapping[time[i]], number_mapping[time[i + 1]]]
-                for i in range(0, len(time) - 1, 2)
-            ]   
-            # 檢查上課時間是否為 False
-            # 檢查 time_available 是否為 False
-            find_flag = False
-            for i in range(8):
-                loop_flag = False
+                # 將上課時間映射到數字
+                time_mapping = [
+                    [weekday_mapping[time[i]], number_mapping[time[i + 1]]]
+                    for i in range(0, len(time) - 1, 2)
+                ]   
+                # 檢查上課時間是否為 False
+                # 檢查 time_available 是否為 False
+                find_flag = False
+                for i in range(8):
+                if sum[i] + school_point > CreditList[i]:
+                    continue 
+                    loop_flag = False
                 for j in range(len(time_mapping)):
-                    if time_available[i, time_mapping[j][0], time_mapping[j][1]] == True:
-                        loop_flag = True
+                        if time_available[i, time_mapping[j][0], time_mapping[j][1]] == True:
+                            loop_flag = True
                         break
                 # 更新 time_available，將對應的時間標記為 True
                 # print((max_rank_course['科號'].iloc[0])[-6])
@@ -101,21 +131,28 @@ for category in ['A', 'B', 'C', 'D']:
                     if time_available[i, time_mapping[j][0], time_mapping[j][1]] == True:
                         loop_flag = True
                         break
-                # 更新 time_available，將對應的時間標記為 True
-                if not loop_flag and int((max_rank_course['科號'].iloc[0])[-6]) == int(i/2) + 1:
+                    # 更新 time_available，將對應的時間標記為 True
+                    if not loop_flag and int((max_rank_course['科號'].iloc[0])[-6]) == int(i/2) + 1:
                     for j in range(len(time_mapping)):
-                        time_available[i, time_mapping[j][0], time_mapping[j][1]] = True
-                        course_codes[i, time_mapping[j][0], time_mapping[j][1]] = max_rank_course['中文課名']
+                            time_available[i, time_mapping[j][0], time_mapping[j][1]] = True
+                            course_codes[i, time_mapping[j][0], time_mapping[j][1]] = max_rank_course['中文課名']
                     # 將找到的課程加入最終列表
-                    highest_ranked_courses.append(max_rank_course)
-                    find_flag = True
+                        highest_ranked_courses.append(max_rank_course)
+                        find_flag = True
+                if type == 2:
+                    ABCDsum += 1
+                    if ABCDsum >= 3:
+                        break
+                        break
+                if find_flag:
                     break
-            if find_flag:
-                break
 
-            # 找下一個等級制最高的課程
-            rank_to_find += 1
+                # 找下一個等級制最高的課程
+                rank_to_find += 1
 '''
+
+
+
 
 # 將結果轉換為 DataFrame
 result_df = pd.concat(highest_ranked_courses, ignore_index=True)
