@@ -1,5 +1,5 @@
 from SelectSetting import AllCoursesData
-from SelectSetting import SelectType
+from SelectSetting import SelectNumberList
 from SelectSetting import SelectCourse
 from SelectSetting import CreditList
 from SelectSetting import AddCourseABCD
@@ -27,11 +27,9 @@ course_codes = np.full((8, 7, 13), None)
 credit = [0 for i in range(0, 8)]
 course_list = [pd.DataFrame() for i in range(8)]
 
-highest_ranked_courses = []
-sum = []
-for i in range(8):
-    sum.append(0)
-#print(SelectCourse , SelectType)
+result_df = pd.DataFrame()
+
+AllCourses = []
 
 ABCDsum = 0
 for type in range(3):
@@ -91,8 +89,9 @@ for type in range(3):
                         course_codes[semester, time[0], time[1]] = max_rank_course['中文課名'].iloc[0]
 
                     credit[semester] += max_rank_course['學分'].iloc[0]
+                    AllCourses.append(max_rank_course['科號'].iloc[0])
                     course_list[semester] = pd.concat([course_list[semester], max_rank_course], ignore_index = True)
-                    highest_ranked_courses.append(max_rank_course)
+                    result_df = pd.concat([result_df, max_rank_course], ignore_index = True)
 
                     find_flag = True
 
@@ -107,19 +106,18 @@ for type in range(3):
 
             rank_to_find += 1
 
-
-# 將結果轉換為 DataFrame
-result_df = pd.concat(highest_ranked_courses, ignore_index=True)
-
 # TODO: 校定必修(英文，通識，體育)
         
-GE1 = pd.DataFrame(GEclassData[GEclassData['通識分類'].str.contains('核心通識CoreGEcourses1')]).sort_values(by = ['等級制'], ascending = False)
-GE2 = pd.DataFrame(GEclassData[GEclassData['通識分類'].str.contains('核心通識CoreGEcourses2')]).sort_values(by = ['等級制'], ascending = False)
-GE3 = pd.DataFrame(GEclassData[GEclassData['通識分類'].str.contains('核心通識CoreGEcourses3')]).sort_values(by = ['等級制'], ascending = False)
-GE4 = pd.DataFrame(GEclassData[GEclassData['通識分類'].str.contains('核心通識CoreGEcourses4')]).sort_values(by = ['等級制'], ascending = False)
+GEC1 = pd.DataFrame(GEclassData[GEclassData['通識分類'].str.contains('核心通識CoreGEcourses1')]).sort_values(by = ['等級制'], ascending = False)
+GEC2 = pd.DataFrame(GEclassData[GEclassData['通識分類'].str.contains('核心通識CoreGEcourses2')]).sort_values(by = ['等級制'], ascending = False)
+GEC3 = pd.DataFrame(GEclassData[GEclassData['通識分類'].str.contains('核心通識CoreGEcourses3')]).sort_values(by = ['等級制'], ascending = False)
+GEC4 = pd.DataFrame(GEclassData[GEclassData['通識分類'].str.contains('核心通識CoreGEcourses4')]).sort_values(by = ['等級制'], ascending = False)
 
-for GE in [GE1, GE2, GE3, GE4]:
-    for index, row in GE.iterrows():
+GE_list = []
+GE_Credit = 0
+
+for GEC in [GEC1, GEC2, GEC3, GEC4]:
+    for index, row in GEC.iterrows():
         GE_flag = False
         for semester in range(8):
 
@@ -148,13 +146,55 @@ for GE in [GE1, GE2, GE3, GE4]:
 
             for time in time_mapping:
                 course_codes[semester, time[0], time[1]] = row['中文課名']
+            GE_list.append(row['科號'])
+            GE_Credit += row['學分']
             credit[semester] += row['學分']
-            course_list[semester] = pd.concat([course_list[semester], row.to_frame().T], ignore_index = True)
+            result_df = pd.concat([result_df, row.to_frame().T], ignore_index = True)
+            course_list[semester] = pd.concat([course_list[semester], row.to_frame().T.drop(columns = ['通識分類'])], ignore_index = True)
             GE_flag = True
             break
         if GE_flag:
-            break 
-        
+            break
+
+GE = GEclassData[~GEclassData['科號'].isin(GE_list)].sort_values(by = ['等級制'], ascending = False)
+
+for index, row in GE.iterrows():
+    if GE_Credit >= 20:
+        break
+    for semester in range(8):
+
+        if int(row['科號'][3]) & 1 != (semester + 1) & 1:
+            continue
+
+        if credit[semester] + row['學分'] > CreditList[semester]:
+            continue
+
+        time = row['上課時間'].replace(',', '')
+            
+        time_mapping = [
+            [weekday_mapping[time[i]], number_mapping[time[i + 1]]]
+            for i in range(0, len(time) - 1, 2)
+        ]
+
+        loop_flag = False
+
+        for time in time_mapping:
+            if course_codes[semester, time[0], time[1]]:
+                loop_flag = True
+                break
+
+        if loop_flag:
+            break
+
+        for time in time_mapping:
+            course_codes[semester, time[0], time[1]] = row['中文課名']
+        GE_list.append(row['科號'])
+        GE_Credit += row['學分']
+        credit[semester] += row['學分']
+        result_df = pd.concat([result_df, row.to_frame().T], ignore_index = True)
+        course_list[semester] = pd.concat([course_list[semester], row.to_frame().T.drop(columns = ['通識分類'])], ignore_index = True)
+        GE_flag = True
+        break
 
 ##### 電機資訊專業選修
 # TODO: 
@@ -175,6 +215,8 @@ AllSelectedCourse = AllSelectedCourse[~AllSelectedCourse['中文課名'].str.con
 AllSelectedCourse = AllSelectedCourse[~AllSelectedCourse['中文課名'].str.contains('書報討論')]
 
 for index, row in AllSelectedCourse.iterrows():
+    if selected_credit > 12:
+        break
     for semester in range(8):
         if int(row['科號'][-6]) != (semester >> 1) + 1:
             continue
@@ -204,11 +246,63 @@ for index, row in AllSelectedCourse.iterrows():
 
         for time in time_mapping:
             course_codes[semester, time[0], time[1]] = row['中文課名']
+        selected_credit += row['學分']
         credit[semester] += row['學分']
+        result_df = pd.concat([result_df, row.to_frame().T], ignore_index = True)
         course_list[semester] = pd.concat([course_list[semester], row.to_frame().T], ignore_index = True)
         break
 
 # TODO: 其餘選修
+    
+if '1' in SelectNumberList and '2' in SelectNumberList:
+    Other = AllCoursesData[AllCoursesData['科號'].str.contains('MATH') | AllCoursesData['科號'].str.contains('STAT') | AllCoursesData['科號'].str.contains('PHYS')]
+
+elif '1' in SelectNumberList:
+    Other = AllCoursesData[AllCoursesData['科號'].str.contains('MATH') | AllCoursesData['科號'].str.contains('STAT')]
+
+elif '2' in SelectNumberList:
+    Other = AllCoursesData[AllCoursesData['科號'].str.contains('PHYS')]
+
+else:
+    Other = AllCoursesData[~(AllCoursesData['科號'].str.contains('MATH') | AllCoursesData['科號'].str.contains('STAT') | AllCoursesData['科號'].str.contains('PHYS'))]
+
+Other = Other[~Other['科號'].isin(result_df['科號'].values)].sort_values(by = ['等級制'], ascending = False)
+
+for index, row in Other.iterrows():
+    for semester in range(8):
+        if int(row['科號'][-6]) != (semester >> 1) + 1:
+            continue
+
+        if int(row['科號'][3]) & 1 != (semester + 1) & 1:
+            continue
+
+        if credit[semester] >= CreditList[semester]:
+            continue
+
+        time = row['上課時間'].replace(',', '')
+        
+        time_mapping = [
+            [weekday_mapping[time[i]], number_mapping[time[i + 1]]]
+            for i in range(0, len(time) - 1, 2)
+        ]
+
+        loop_flag = False
+
+        for time in time_mapping:
+            if course_codes[semester, time[0], time[1]]:
+                loop_flag = True
+                break
+
+        if loop_flag:
+            break
+
+        for time in time_mapping:
+            course_codes[semester, time[0], time[1]] = row['中文課名']
+        selected_credit += row['學分']
+        credit[semester] += row['學分']
+        result_df = pd.concat([result_df, row.to_frame().T], ignore_index = True)
+        course_list[semester] = pd.concat([course_list[semester], row.to_frame().T], ignore_index = True)
+        break
 
 # 顯示最高等級的課程
 # print("最高等級制的課程:")
