@@ -102,58 +102,6 @@ for type in range(3):
 
             rank_to_find += 1
 
-
-# ##### 系訂必修+大學中文
-# for category in ['1', 'X']:
-#     category_data = MustclassData[MustclassData['類別'] == category]
-#     for index, row in category_data.iterrows():
-#             rank_to_find = 1
-#         #print("rank_to_find ", rank_to_find,"type = ",type)
-#             if row['科號'] == '-1':
-#                 temp_max_rank_course = AllCoursesData.loc[AllCoursesData['中文課名'] == row['中文課名']]
-#             else:
-#                 temp_max_rank_course = AllCoursesData.loc[AllCoursesData['科號'].astype(str).str.contains(str(row['科號']))]
-#             while True:
-#                 if len(temp_max_rank_course) < rank_to_find:
-#                     break
-#                 max_rank_course = temp_max_rank_course.nlargest(rank_to_find, '等級制').iloc[rank_to_find - 1:rank_to_find].copy()
-#                 # 將上課時間映射到數字
-#                 time = max_rank_course['上課時間'].iloc[0].replace(',', '')
-#                 school_point = int(max_rank_course['學分'].iloc[0])
-
-#                 # 將上課時間映射到數字
-#                 time_mapping = [
-#                     [weekday_mapping[time[i]], number_mapping[time[i + 1]]]
-#                     for i in range(0, len(time) - 1, 2)
-#                 ]   
-#                 # 檢查上課時間是否為 False
-#                 # 檢查 time_available 是否為 False
-#                 find_flag = False
-#                 for i in range(8):
-#                     if sum[i] + school_point > CreditList[i]:
-#                         continue 
-#                     loop_flag = False
-#                     for j in range(len(time_mapping)):
-#                         if time_available[i, time_mapping[j][0], time_mapping[j][1]] == True:
-#                             loop_flag = True
-#                         break
-#                 # 更新 time_available，將對應的時間標記為 True
-#                 # print((max_rank_course['科號'].iloc[0])[-6])
-#                     if not loop_flag and int((max_rank_course['科號'].iloc[0])[-6]) == int(i/2) + 1: 
-#                         for j in range(len(time_mapping)):
-#                             time_available[i, time_mapping[j][0], time_mapping[j][1]] = True
-#                             course_codes[i, time_mapping[j][0], time_mapping[j][1]] = max_rank_course['中文課名']
-#                         # 將找到的課程加入最終列表
-#                         credit[i] += max_rank_course['學分'].iloc[0]
-#                         highest_ranked_courses.append(max_rank_course)
-#                         find_flag = True
-#                         break
-#                 if find_flag:
-#                     break
-
-#             # 找下一個等級制最高的課程
-#             rank_to_find += 1
-
 ##### 專業課程ABCD類
 # TODO: 目前是所有ABCD類的每一堂課程都會找出最高分
 # 應該要ABCD類至少選3類，學分加起來12
@@ -221,13 +169,10 @@ AllSelectedCourse = pd.DataFrame()
 selected_credit = 0
 
 # for prefix in target_prefixes:
+
 #     prefix_courses = AllCoursesData[AllCoursesData['科號'].str.contains(prefix)]
     
-#     for course in prefix_courses:
-#         if course 
-
-#     if result_df['中文課名'].isin(prefix_courses['中文課名'].values) and AllSelectedCourse['中文課名'].isin(prefix_courses['中文課名'].values):
-#         continue
+#     prefix_courses = prefix_courses[prefix_courses['科號'].str.contains(result_df['科號'].values)]
 
 #     AllSelectedCourse = pd.concat([AllSelectedCourse, prefix_courses], ignore_index = True)
 #     # 根據等級制對所有該前綴的課程進行排序
@@ -267,7 +212,6 @@ selected_credit = 0
 
 # print(AllSelectedCourse)
 
-
 # TODO: 校定必修(英文，通識，體育)
 
 # TODO: 其餘選修
@@ -293,3 +237,8 @@ for semester in range(8):
                 day_schedule.append("--")
         print("Day {}: {}".format(day, ' '.join(day_schedule)))
     print("\n")
+
+
+course_codes = [pd.DataFrame(semester).T.rename(columns = {0: 'MON', 1: 'TUE', 2: 'WED', 3: 'THR', 4: 'FRI', 5: 'SAT', 6: 'SUN'}) for semester in course_codes]
+
+print(course_codes)
