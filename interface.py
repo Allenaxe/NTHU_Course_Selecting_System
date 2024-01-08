@@ -377,23 +377,7 @@ def set_null_time_schedule():
     return df_schedule
 
 
-### 處理上課時間的逗號
-for idx in range(0,len(result_df['上課時間'])):
-    result_df['上課時間'][idx] =  result_df['上課時間'][idx].replace(',', '')
-    # print(result_df['上課時間'])
-
-counter += 1
-key = f"input{counter}"
-if st.button("顯示推薦課表",key=key):
-    
-    # #test
-    # df_schedule = set_null_time_schedule()
-    # print(df_schedule)
-    # print(df_schedule['M']['1'])
-
-
-    ###一上課表
-    one_up_data = set_null_time_schedule()
+def fill_in_time_schedule(dataframe,result_df):
     for num, course_time in enumerate(result_df['上課時間']):
         # print(course_time)
         row_col_list = []
@@ -410,15 +394,33 @@ if st.button("顯示推薦課表",key=key):
         for (row, col) in row_col_list:
             # print(row)
             # print(col)
-            one_up_data[row][col] = f"{result_df.iloc[num]['中文課名']}  {result_df.iloc[num]['教師']} {result_df.iloc[num]['上課時間']}"
-            # print(one_up_data[row][col])
+            dataframe[row][col] = f"{result_df.iloc[num]['中文課名']}  {result_df.iloc[num]['教師']} {result_df.iloc[num]['上課時間']}"
+            # print(data[row][col])
+    return dataframe
 
+### 處理上課時間的逗號
+for idx in range(0,len(result_df['上課時間'])):
+    result_df['上課時間'][idx] =  result_df['上課時間'][idx].replace(',', '')
+    # print(result_df['上課時間'])
+
+
+
+
+counter += 1
+key = f"input{counter}"
+if st.button("顯示推薦課表",key=key):    
+    # #test
+    # df_schedule = set_null_time_schedule()
+    # print(df_schedule)
+    # print(df_schedule['M']['1'])
+
+    ###一上課表
+    one_up_data = set_null_time_schedule()
+    one_up_data = fill_in_time_schedule(one_up_data,result_df)
     print("大一上 推薦課表")
     print(one_up_data)
-
     st.subheader("大一上 推薦課表:")
     st.table(one_up_data)
-
 
     ###一下課表
     one_down_data = set_null_time_schedule()
